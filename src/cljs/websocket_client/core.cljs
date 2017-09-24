@@ -3,7 +3,8 @@
   (:require [cljs.reader :refer [read-string]]
             [goog.object :refer [set]]
             [cljs.core.async :as async :refer [chan >! <! timeout]]
-            [clojure.core.async.impl.protocols :as impl]))
+            [clojure.core.async.impl.protocols :as impl]
+            [cognitect.transit :as transit]))
 
 (declare ws-state log new-websocket! monitor-send-msg-queue! dummy-on-msg)
 
@@ -24,18 +25,24 @@
       new-websocket!
       monitor-send-msg-queue!))
 
+(def json-writer (transit/writer :json))
+
+(def json-reader (transit/reader :json))
+
 (defn on-open [aws]
   "Callback.  When WS opens."
   (fn []
     (go
       (loop []
-        (let [msg (<! (:ws-only-send-chan aws))]
+        (let [msg (<! (:ws-only-send-chan aws))
+              json-msg (transit/write json-writer msg)]
           (.send (:websocket aws) msg))
         (recur)))))
 
 (defn on-message [aws event]
   "Callback.  When WS receives a message."
-  (let [recvd-msg (aget event "data")]
+  (let [recvd-msg-json (aget event "data")
+        recvd-msg (transit/read json-reader recvd-msg-json)]
     (go
       (>! (:app-recv-chan aws) recvd-msg))))
 
@@ -65,3 +72,4 @@
     1 :ready-to-transmit
     3 :ws-closed}
    (.-readyState (:websocket aws))))
+
