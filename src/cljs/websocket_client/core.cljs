@@ -1,7 +1,7 @@
 (ns websocket-client.core
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.reader :refer [read-string]]
-            [klang.core :refer-macros [info! warn! erro! crit! fata! trac!]]
+            ;; [klang.core :refer-macros [info! warn! erro! crit! fata! trac!]]
             [goog.object :refer [set]]
             [cljs.core.async :as async :refer [chan >! <! timeout]]
             [clojure.core.async.impl.protocols :as impl]
@@ -37,7 +37,8 @@
       (loop []
         (let [msg (<! (:ws-only-send-chan aws))
               json-msg (transit/write json-writer msg)]
-          (info! "Sending transit request" json-msg)
+          ;; (info! "Sending transit request" json-msg)
+          (.log js/console "Sending JSON: " json-msg)
           (.send (:websocket aws) msg))
         (recur)))))
 
