@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
                  [org.clojure/clojurescript "1.9.456"]
                  [com.cognitect/transit-cljs "0.8.239"]
+                 [klang "0.5.9"]
                  [org.clojure/core.async "0.2.395" :exclusions [org.clojure/tools.reader]]]
   
   :source-paths ["src/cljs"]
