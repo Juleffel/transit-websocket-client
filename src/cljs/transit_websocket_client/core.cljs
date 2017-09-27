@@ -38,7 +38,7 @@
         (let [msg (<! (:ws-only-send-chan aws))
               json-msg (transit/write json-writer msg)]
           (.log js/console "Sending JSON: " json-msg)
-          (.send (:websocket aws) msg))
+          (.send (:websocket aws) json-msg))
         (recur)))))
 
 (defn on-message [aws event]

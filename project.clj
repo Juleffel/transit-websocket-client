@@ -16,7 +16,7 @@
               [{:id "dev"
                 :source-paths ["src/cljs"]
                 :figwheel true
-                :compiler {:main websocket-client.core
+                :compiler {:main transit-websocket-client.core
                            :asset-path "js"
                            :output-to "resources/public/js/main.js"
                            :output-dir "resources/public/js"
