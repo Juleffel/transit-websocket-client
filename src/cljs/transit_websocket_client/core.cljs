@@ -1,4 +1,4 @@
-(ns websocket-client.core
+(ns transit-websocket-client.core
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.reader :refer [read-string]]
             ;; [klang.core :refer-macros [info! warn! erro! crit! fata! trac!]]
@@ -37,7 +37,6 @@
       (loop []
         (let [msg (<! (:ws-only-send-chan aws))
               json-msg (transit/write json-writer msg)]
-          ;; (info! "Sending transit request" json-msg)
           (.log js/console "Sending JSON: " json-msg)
           (.send (:websocket aws) msg))
         (recur)))))
@@ -46,6 +45,8 @@
   "Callback.  When WS receives a message."
   (let [recvd-msg-json (aget event "data")
         recvd-msg (transit/read json-reader recvd-msg-json)]
+    (.log js/console "RECVD JSON: " recvd-msg-json)
+    (.log js/console "JSON->EDN: " recvd-msg)
     (go
       (>! (:app-recv-chan aws) recvd-msg))))
 
